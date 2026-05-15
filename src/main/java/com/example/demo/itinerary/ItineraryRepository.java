@@ -1,9 +1,9 @@
-package com.example.demo.trip;
+package com.example.demo.itinerary;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TripRepository extends JpaRepository<Trip, Long> {
+public interface ItineraryRepository extends JpaRepository<Itinerary, Long> {
 
 }

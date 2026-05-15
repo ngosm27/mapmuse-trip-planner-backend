@@ -29,6 +29,18 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Trip> trips = new ArrayList<>();
 
+    public User() {
+
+    }
+
+    public User(Long id, String name, String username, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(String name, String username, String email, String password) {
         this.name = name;
         this.username = username;
@@ -74,6 +86,11 @@ public class User {
 
     public void setTrips(List<Trip> trips) {
         this.trips = trips;
+
+    }
+
+    public String toString() {
+        return "User{id=" + id + ", name='" + name + "', username='" + username + "', email='" + email + "'}";
     }
 
 }

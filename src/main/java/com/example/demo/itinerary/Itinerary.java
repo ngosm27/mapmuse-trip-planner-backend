@@ -16,12 +16,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-@Data
 public class Itinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
     private LocalDate date;
     private String notes;
 
@@ -31,8 +31,9 @@ public class Itinerary {
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
     private List<Activity> activities;
 
-    public Itinerary(Long id, LocalDate date, String notes) {
+    public Itinerary(Long id, String name, LocalDate date, String notes) {
         this.id = id;
+        this.name = name;
         this.date = date;
         this.notes = notes;
     }
@@ -44,6 +45,14 @@ public class Itinerary {
     public Long getID() {
         return this.id;
 
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDate(LocalDate date) {
@@ -60,14 +69,6 @@ public class Itinerary {
 
     public String getNotes() {
         return this.notes;
-    }
-
-    public void setTrip(Trip trip) {
-        this.trip = trip;
-    }
-
-    public Trip getTrip() {
-        return this.trip;
     }
 
     public void setActivities(List<Activity> activities) {

@@ -2,7 +2,6 @@ package com.example.demo.activity;
 
 import java.time.LocalTime;
 
-import com.example.demo.itinerary.Data;
 import com.example.demo.itinerary.Itinerary;
 
 import jakarta.persistence.Entity;
@@ -12,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-@Data
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

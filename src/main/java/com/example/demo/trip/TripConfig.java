@@ -1,4 +1,4 @@
-package com.example.demo.trips;
+package com.example.demo.trip;
 
 import org.springframework.context.annotation.Configuration;
 
