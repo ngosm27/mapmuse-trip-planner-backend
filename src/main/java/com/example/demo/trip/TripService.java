@@ -18,15 +18,30 @@ public class TripService {
         return tripRepository.findAll();
     }
 
-    public void addTrip(Trip trip) {
+    public Trip getTripById(Long id) {
+        return tripRepository.findById(id).orElse(null);
+    }
 
-        System.out.println(trip);
+    public void addTrip(Trip trip) {
+        tripRepository.save(trip);
+    }
+
+    public Trip updateTrip(Long id, Trip updatedTrip) {
+        return tripRepository.findById(id)
+                .map(trip -> {
+                    trip.setName(updatedTrip.getName());
+                    trip.setDestination(updatedTrip.getDestination());
+                    trip.setStartDate(updatedTrip.getStartDate());
+                    trip.setEndDate(updatedTrip.getEndDate());
+                    return tripRepository.save(trip);
+                })
+                .orElse(null);
     }
 
     public void deleteTrip(Long id) {
         boolean exist = tripRepository.existsById(id);
         if (!exist) {
-            throw new IllegalStateException("ID does not exist");
+            throw new IllegalStateException("Trip not found");
         }
         tripRepository.deleteById(id);
     }
