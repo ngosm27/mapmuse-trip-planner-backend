@@ -18,6 +18,10 @@ public class ItineraryService {
         return itineraryRepository.save(itinerary);
     }
 
+    public List<Itinerary> getItinerariesByTripId(Long tripId) {
+        return itineraryRepository.findByTripId(tripId);
+    }
+
     public Itinerary getItineraryById(Long id) {
         return itineraryRepository.findById(id).orElse(null);
     }
@@ -29,10 +33,8 @@ public class ItineraryService {
     public Itinerary updateItinerary(Long id, Itinerary updatedItinerary) {
         return itineraryRepository.findById(id)
                 .map(itinerary -> {
-                    itinerary.setName(updatedItinerary.getName());
                     itinerary.setNotes(updatedItinerary.getNotes());
                     itinerary.setDate(updatedItinerary.getDate());
-                    itinerary.setActivities(updatedItinerary.getActivities());
 
                     return itineraryRepository.save(itinerary);
                 })

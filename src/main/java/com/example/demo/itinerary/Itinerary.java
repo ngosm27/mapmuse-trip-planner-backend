@@ -21,7 +21,6 @@ public class Itinerary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
     private LocalDate date;
     private String notes;
 
@@ -31,28 +30,22 @@ public class Itinerary {
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
     private List<Activity> activities;
 
-    public Itinerary(Long id, String name, LocalDate date, String notes) {
+    public Itinerary() {
+    }
+
+    public Itinerary(Long id, LocalDate date, String notes) {
         this.id = id;
-        this.name = name;
         this.date = date;
         this.notes = notes;
     }
 
-    public void setID(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getID() {
+    public Long getId() {
         return this.id;
 
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setDate(LocalDate date) {
@@ -71,12 +64,20 @@ public class Itinerary {
         return this.notes;
     }
 
-    public void setActivities(List<Activity> activities) {
-        this.activities = activities;
+    public void setTrip(Trip trip) {
+        this.trip = trip;
+    }
+
+    public Trip getTrip() {
+        return this.trip;
     }
 
     public List<Activity> getActivities() {
         return this.activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
     }
 
 }
