@@ -25,6 +25,9 @@ public class Activity {
     @ManyToOne
     private Itinerary itinerary;
 
+    public Activity() {
+    }
+
     public Activity(String activityName, String location, LocalTime startTime, LocalTime endTime, String category) {
         this.activityName = activityName;
         this.location = location;
@@ -33,11 +36,19 @@ public class Activity {
         this.category = category;
     }
 
-    public void setActivity(String activityName) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setActivityName(String activityName) {
         this.activityName = activityName;
     }
 
-    public String getActivity() {
+    public String getActivityName() {
         return this.activityName;
     }
 
@@ -77,7 +88,7 @@ public class Activity {
         return this.itinerary;
     }
 
-    public void setTrips(Itinerary itinerary) {
+    public void setItinerary(Itinerary itinerary) {
         this.itinerary = itinerary;
     }
 
