@@ -16,11 +16,14 @@ public class UserService {
 
     public List<User> getUsers() {
         return userRepository.findAll();
-
     }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     public User createUser(User user) {

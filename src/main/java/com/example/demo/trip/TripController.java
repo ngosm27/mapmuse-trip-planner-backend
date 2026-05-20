@@ -40,8 +40,10 @@ public class TripController {
 
     @PostMapping
     public ResponseEntity<Void> newTrip(@RequestBody Trip trip) {
+
         tripService.addTrip(trip);
         return ResponseEntity.status(201).build();
+
     }
 
     @PutMapping(path = "/{id}")

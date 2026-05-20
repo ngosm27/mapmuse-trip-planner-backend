@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.example.demo.itinerary.Itinerary;
 import com.example.demo.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -32,9 +33,10 @@ public class Trip {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner")
     private User owner;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<Itinerary> itineraries = new ArrayList<>();
 
@@ -50,11 +52,12 @@ public class Trip {
         this.endDate = endDate;
     }
 
-    public Trip(String name, String destination, LocalDate startDate, LocalDate endDate) {
+    public Trip(String name, String destination, LocalDate startDate, LocalDate endDate, User owner) {
         this.name = name;
         this.destination = destination;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -71,6 +74,14 @@ public class Trip {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public User getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public String getDestination() {

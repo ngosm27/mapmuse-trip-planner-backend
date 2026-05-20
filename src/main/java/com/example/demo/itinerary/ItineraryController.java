@@ -45,7 +45,7 @@ public class ItineraryController {
     }
 
     @PostMapping
-    public ResponseEntity<Itinerary> createItinerary(Itinerary itinerary) {
+    public ResponseEntity<Itinerary> createItinerary(@RequestBody Itinerary itinerary) {
         Itinerary createdItinerary = itineraryService.createItinerary(itinerary);
         return ResponseEntity.ok(createdItinerary);
     }

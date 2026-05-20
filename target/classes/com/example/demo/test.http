@@ -1,0 +1,219 @@
+
+
+### CREATE USER 1
+POST http://localhost:8080/api/v1/user/register
+Content-Type: application/json
+
+
+{
+    "name": "Alice",
+    "username": "alice123",
+    "email": "alice@email.com",
+    "password": "secret"
+}
+### CREATE USER 2
+POST http://localhost:8080/api/v1/user/register
+Content-Type: application/json
+
+{
+    "name": "Bob",
+    "username": "bob123",
+    "email": "bob@email.com",
+    "password": "secret"
+}
+
+### GET ALL USER 
+GET http://localhost:8080/api/v1/user
+
+### GET USER 1
+GET http://localhost:8080/api/v1/user/1
+### GET USER 2
+GET http://localhost:8080/api/v1/user/2
+
+### UPDATE USER 2
+PUT http://localhost:8080/api/v1/user/1
+Content-Type: application/json
+
+{
+    "name": "Boyka",
+    "username": "fwboyka",
+    "email": "boyka@email.com",
+    "password": "secret"
+}
+
+### DELETE USER 1
+DELETE http://localhost:8080/api/v1/user/2
+
+
+
+### CREATE TRIP 1
+POST http://localhost:8080/api/v1/trip
+Content-Type: application/json
+
+{
+    "name": "Trip 1",
+    "destination": "Paris",
+    "startDate": "2024-07-01",
+    "endDate": "2024-07-07",
+    "owner": {
+        "id": 1
+    }
+}
+
+### CREATE TRIP 2
+POST http://localhost:8080/api/v1/trip
+Content-Type: application/json
+
+{
+    "name": "Trip 2",
+    "destination": "London",
+    "startDate": "2024-08-01",
+    "endDate": "2024-08-07",
+    "owner": {
+        "id": 1
+    }
+}
+
+### UPDATE TRIP 2
+PUT http://localhost:8080/api/v1/trip/2
+Content-Type: application/json
+
+{
+    "name": "Trip 2",
+    "destination": "Tokyo",
+    "startDate": "2024-09-01",
+    "endDate": "2024-09-07",
+    "owner": {
+        "id": 1
+    }
+}
+
+### GET ALL TRIP
+GET http://localhost:8080/api/v1/trip
+
+### DELETE TRIP 1
+DELETE http://localhost:8080/api/v1/trip/1
+
+
+   
+
+
+### CREATE ITINERARY 1
+POST http://localhost:8080/api/v1/itinerary
+Content-Type: application/json  
+
+{
+    "date": "2024-07-02",
+    "notes": "Day 1 in Paris",
+    "trip": {
+        "id": 1
+    }
+}
+
+### CREATE ITINERARY 2
+POST http://localhost:8080/api/v1/itinerary
+Content-Type: application/json  
+
+{
+    "date": "2024-07-03",
+    "notes": "Day 2 in Paris",
+    "trip": {
+        "id": 1
+    }
+}   
+
+### UPDATE ITINERARY 2
+PUT http://localhost:8080/api/v1/itinerary/2
+Content-Type: application/json  
+
+{
+    "date": "2024-07-03",
+    "notes": "Day 2 in Paris - updated",
+    "trip": {
+        "id": 1
+    }
+}
+
+### DELETE ITINERARY 1
+DELETE http://localhost:8080/api/v1/itinerary/1
+
+### CREATE ITINERARY 3
+POST http://localhost:8080/api/v1/itinerary
+Content-Type: application/json  
+
+{
+    "date": "2024-07-04",
+    "notes": "Day 3 in Paris",
+    "trip": {
+        "id": 1
+    }
+}
+
+### GET ITINERARY for TRIP 1
+GET http://localhost:8080/api/v1/itinerary/trip/1
+
+### GET ALL ITINERARY
+GET http://localhost:8080/api/v1/itinerary
+
+### CREATE ACTITIVITY 1 FOR ITINERARY 3
+POST http://localhost:8080/api/v1/activities
+Content-Type: application/json
+
+{
+    "activityName": "Visit Eiffel Tower",
+    "location": "Eiffel Tower, Paris",
+    "startTime": "2024-07-04T10:00:00",
+    "endTime": "2024-07-04T12:00:00",
+    "category": "Sightseeing",
+    "itinerary": {
+        "id": 3
+    }
+}
+
+### CREATE ACTITIVITY 2 FOR ITINERARY 3
+POST http://localhost:8080/api/v1/activities
+Content-Type: application/json  
+
+{
+    "activityName": "Lunch at Le Jules Verne",
+    "location": "Le Jules Verne, Eiffel Tower, Paris",
+    "startTime": "2024-07-04T12:30:00",
+    "endTime": "2024-07-04T14:00:00",
+    "category": "Dining",
+    "itinerary": {
+        "id": 3
+    }
+}
+### CREATE ACTITIVITY 1 FOR ITINERARY 1
+POST http://localhost:8080/api/v1/activities
+Content-Type: application/json  
+
+{
+    "activityName": "Visit Louvre Museum",
+    "location": "Louvre Museum, Paris",
+    "startTime": "2024-07-02T10:00:00",
+    "endTime": "2024-07-02T13:00:00",
+    "category": "Sightseeing",
+    "itinerary": {
+        "id": 2
+    }
+}
+
+
+### GET ACTIVITIES FOR ITINERARY 3
+GET http://localhost:8080/api/v1/activities/itinerary/3     
+
+### DELETE ACTIVITY 1
+DELETE http://localhost:8080/api/v1/activities/1
+
+### GET ALL ACTIVITIES
+GET http://localhost:8080/api/v1/activities
+
+### DELETE itinerary 2
+DELETE http://localhost:8080/api/v1/itinerary/3
+
+### DELETE TRIP 1
+DELETE http://localhost:8080/api/v1/trip/1
+
+### DELETE USER 1
+DELETE http://localhost:8080/api/v1/user/1  

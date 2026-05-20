@@ -43,6 +43,10 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        // if user is already exists in the database,
+        if (userService.getUserByEmail(user.getEmail()) != null) {
+            return ResponseEntity.status(400).build();
+        }
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(201).body(createdUser);
     }

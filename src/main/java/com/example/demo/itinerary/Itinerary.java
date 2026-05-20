@@ -2,6 +2,7 @@ package com.example.demo.itinerary;
 
 import com.example.demo.activity.Activity;
 import com.example.demo.trip.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 
@@ -27,6 +28,7 @@ public class Itinerary {
     @ManyToOne
     private Trip trip;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL)
     private List<Activity> activities;
 
