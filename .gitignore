@@ -1,6 +1,5 @@
 .env
 target/
 *.class
-aws-postgres.session.sql
 .vscode/launch.json
 .vscode/settings.json
