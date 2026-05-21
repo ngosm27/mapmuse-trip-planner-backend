@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "DemoApplication",
+            "request": "launch",
+            "mainClass": "com.example.demo.DemoApplication",
+            "env": {
+                "DB_URL": "jdbc:postgresql://trip-planner.cxsoqmggc8wf.us-west-1.rds.amazonaws.com:5432/postgres?sslmode=require",
+                "DB_USERNAME": "postgres",
+                "DB_PASSWORD": "trip_planner2026"
+            }
+        }
+    ]
+    
+
+}
