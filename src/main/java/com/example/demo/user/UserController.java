@@ -41,6 +41,16 @@ public class UserController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestBody User user) {
+        User loggedInUser = userService.loginUser(user);
+        if (loggedInUser != null) {
+            return ResponseEntity.ok(loggedInUser);
+        } else {
+            return ResponseEntity.status(401).build();
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         // if user is already exists in the database,

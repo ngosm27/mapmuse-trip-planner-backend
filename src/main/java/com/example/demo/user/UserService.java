@@ -42,6 +42,12 @@ public class UserService {
                 .orElse(null);
     }
 
+    public User loginUser(User user) {
+        return userRepository.findByEmail(user.getEmail())
+                .filter(u -> u.getPassword().equals(user.getPassword()))
+                .orElse(null);
+    }
+
     public boolean deleteUser(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
