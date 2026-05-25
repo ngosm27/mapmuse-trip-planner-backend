@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "api/v1/itinerary")
+@RequestMapping(path = "/itinerary")
 public class ItineraryController {
     private final ItineraryService itineraryService;
 

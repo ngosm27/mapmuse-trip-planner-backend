@@ -1,0 +1,13 @@
+### GET ALL USERS
+GET https://planner-backend-ggqe7.ondigitalocean.app/users
+
+### POST NEW USER
+POST https://planner-backend-ggqe7.ondigitalocean.app/users
+Content-Type: application/json  
+
+{
+    "name": "prickeddd",
+    "email": "prickeddd@example.com",
+    "password": "password123"
+}
+
