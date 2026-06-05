@@ -1,6 +1,8 @@
 package com.example.demo.user;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,6 +70,22 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> passwords) {
+
+        User existing = userService.getUserById(id);
+        if (existing == null)
+            return ResponseEntity.status(404).build();
+
+        if (!existing.getPassword().equals(passwords.get("currentPassword"))) {
+            return ResponseEntity.status(400).body("Current password is incorrect");
+        }
+
+        existing.setPassword(passwords.get("newPassword"));
+        userService.updateUser(id, existing);
+        return ResponseEntity.ok("Password updated successfully");
     }
 
     @DeleteMapping("/{id}")
