@@ -1,9 +1,14 @@
 package com.example.demo.user;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class UserService {
@@ -36,10 +41,25 @@ public class UserService {
                     user.setName(updatedUser.getName());
                     user.setUsername(updatedUser.getUsername());
                     user.setEmail(updatedUser.getEmail());
-                    user.setPassword(updatedUser.getPassword());
+                    // user.setPassword(updatedUser.getPassword());
                     return userRepository.save(user);
                 })
                 .orElse(null);
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> passwords) {
+        User existing = userRepository.findById(id).orElse(null);
+        if (existing == null)
+            return ResponseEntity.status(404).build();
+
+        if (!existing.getPassword().equals(passwords.get("currentPassword"))) {
+            return ResponseEntity.status(400).body("Current password is incorrect");
+        }
+
+        existing.setPassword(passwords.get("newPassword"));
+        userRepository.save(existing);
+        return ResponseEntity.ok("Password updated!");
     }
 
     public User loginUser(User user) {
