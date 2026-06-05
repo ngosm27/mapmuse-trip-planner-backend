@@ -50,16 +50,19 @@ public class UserService {
     @PutMapping("/{id}/password")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> passwords) {
         User existing = userRepository.findById(id).orElse(null);
+
         if (existing == null)
             return ResponseEntity.status(404).build();
 
+        // Check current password matches
         if (!existing.getPassword().equals(passwords.get("currentPassword"))) {
             return ResponseEntity.status(400).body("Current password is incorrect");
         }
 
+        // Update password
         existing.setPassword(passwords.get("newPassword"));
         userRepository.save(existing);
-        return ResponseEntity.ok("Password updated!");
+        return ResponseEntity.ok("Password updated successfully");
     }
 
     public User loginUser(User user) {
