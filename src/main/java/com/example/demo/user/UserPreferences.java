@@ -61,14 +61,14 @@ public class UserPreferences {
 
     public static class FoodAndLifestyle {
         private String dietaryRestrictions;  // nullable
-        private int foodAdventure;
+        private String foodAdventure;
         private String alcohol;
 
         public String getDietaryRestrictions() { return dietaryRestrictions; }
         public void setDietaryRestrictions(String dietaryRestrictions) { this.dietaryRestrictions = dietaryRestrictions; }
 
-        public int getFoodAdventure() { return foodAdventure; }
-        public void setFoodAdventure(int foodAdventure) { this.foodAdventure = foodAdventure; }
+        public String getFoodAdventure() { return foodAdventure; }
+        public void setFoodAdventure(String foodAdventure) { this.foodAdventure = foodAdventure; }
 
         public String getAlcohol() { return alcohol; }
         public void setAlcohol(String alcohol) { this.alcohol = alcohol; }
