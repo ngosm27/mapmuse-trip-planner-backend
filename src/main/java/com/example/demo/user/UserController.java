@@ -72,6 +72,11 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}/preferences")
+    public ResponseEntity<UserPreferences> updatePreferences(@PathVariable Long id, @RequestBody UserPreferences preferences) {
+        return ResponseEntity.ok(userService.updatePreferences(id, preferences).getPreferences());
+    }
+
     @PutMapping("/{id}/password")
     public ResponseEntity<?> updatePassword(@PathVariable Long id, @RequestBody Map<String, String> passwords) {
 

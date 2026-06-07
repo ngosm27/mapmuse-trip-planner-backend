@@ -1,9 +1,13 @@
 package com.example.demo.user;
 
 import java.util.List;
+import java.util.Map;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class UserService {
@@ -44,6 +48,13 @@ public class UserService {
         }
 
         return userRepository.save(existing);
+    }
+
+    public User updatePreferences(Long userId, UserPreferences preferences) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+        user.setPreferences(preferences);
+        return userRepository.save(user);
     }
 
     public User loginUser(User user) {

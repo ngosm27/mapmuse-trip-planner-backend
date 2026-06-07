@@ -5,14 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import tools.jackson.databind.JsonNode;
 
 @Entity
 @Table(name = "users")
@@ -26,6 +24,10 @@ public class User {
     private String username;
     private String password;
     private String email;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private UserPreferences preferences;
 
     @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
@@ -99,8 +101,11 @@ public class User {
 
     }
 
+    public UserPreferences getPreferences() { return preferences; }
+    public void setPreferences(UserPreferences preferences) { this.preferences =  preferences; }
+
     public String toString() {
-        return "User{id=" + id + ", name='" + name + "', username='" + username + "', email='" + email + "'}";
+        return "User{id=" + id + ", name='" + name + "', username='" + username + "', email='" + email  + "', preferences='" + preferences.toString() + "'}";
     }
 
 }
