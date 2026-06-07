@@ -7,7 +7,7 @@ public class UserPreferences {
     private Basics basics;
     private Budget budget;
     private Experience experience;
-    private Food food;
+    private FoodAndLifestyle foodAndLifestyle;
 
     public static class Basics {
         private String name;
@@ -59,7 +59,7 @@ public class UserPreferences {
         public void setIdealDay(String idealDay) { this.idealDay = idealDay; }
     }
 
-    public static class Food {
+    public static class FoodAndLifestyle {
         private String dietaryRestrictions;  // nullable
         private int foodAdventure;
         private String alcohol;
@@ -85,6 +85,6 @@ public class UserPreferences {
     public Experience getExperience() { return experience; }
     public void setExperience(Experience experience) { this.experience = experience; }
 
-    public Food getFood() { return food; }
-    public void setFood(Food food) { this.food = food; }
+    public FoodAndLifestyle getFoodAndLifestyle() { return foodAndLifestyle; }
+    public void setFoodAndLifestyle(FoodAndLifestyle foodAndLifestyle) { this.foodAndLifestyle = foodAndLifestyle; }
 }
