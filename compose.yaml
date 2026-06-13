@@ -12,3 +12,4 @@ services:
             DB_URL: ${DB_URL}
             DB_USERNAME: ${DB_USERNAME}
             DB_PASSWORD: ${DB_PASSWORD}
+            GOOGLE_API_KEY: ${GOOGLE_API_KEY}
