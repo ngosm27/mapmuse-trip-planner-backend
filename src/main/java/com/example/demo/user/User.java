@@ -101,11 +101,17 @@ public class User {
 
     }
 
-    public UserPreferences getPreferences() { return preferences; }
-    public void setPreferences(UserPreferences preferences) { this.preferences =  preferences; }
+    public UserPreferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(UserPreferences preferences) {
+        this.preferences = preferences;
+    }
 
     public String toString() {
-        return "User{id=" + id + ", name='" + name + "', username='" + username + "', email='" + email  + "', preferences='" + preferences.toString() + "'}";
+        return "User{id=" + id + ", name='" + name + "', username='" + username + "', email='" + email
+                + "', preferences='" + preferences.toString() + "'}";
     }
 
 }
