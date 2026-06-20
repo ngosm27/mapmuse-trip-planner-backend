@@ -57,7 +57,7 @@ public class TripService {
     }
 
     public List<Trip> getTripsByUserId(Long userId) {
-        return tripRepository.findByUserId(userId);
+        return tripRepository.findByOwnerId(userId);
     }
 
 }
