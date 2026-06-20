@@ -56,4 +56,8 @@ public class TripService {
         tripRepository.deleteById(id);
     }
 
+    public List<Trip> getTripsByUserId(Long userId) {
+        return tripRepository.findByUserId(userId);
+    }
+
 }

@@ -11,4 +11,6 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
     // check if a trip belongs to a specific user (useful for ownership validation)
     boolean existsByIdAndOwnerId(Long id, Long ownerId);
+
+    List<Trip> findByUserId(Long userId);
 }

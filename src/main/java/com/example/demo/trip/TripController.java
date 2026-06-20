@@ -61,4 +61,10 @@ public class TripController {
         tripService.deleteTrip(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Trip>> getTripsByUserId(@PathVariable Long userId) {
+        List<Trip> trips = tripService.getTripsByUserId(userId);
+        return ResponseEntity.ok(trips);
+    }
 }
