@@ -46,8 +46,7 @@ public class TravelRecommendationService {
             UserRepository userRepository,
             TripRepository tripRepository,
             ItineraryRepository itineraryRepository,
-            ActivityRepository activityRepository
-    ) {
+            ActivityRepository activityRepository) {
         this.apiKey = apiKey;
         this.model = model;
         this.userRepository = userRepository;
@@ -57,7 +56,8 @@ public class TravelRecommendationService {
     }
 
     @Transactional
-    public TravelRecommendationResponse generateRecommendationForUser(Long userId, TravelRecommendationRequest request) {
+    public TravelRecommendationResponse generateRecommendationForUser(Long userId,
+            TravelRecommendationRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -67,7 +67,8 @@ public class TravelRecommendationService {
         }
 
         if (request.getStartDate() == null || request.getEndDate() == null || request.getDestination() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request is missing start date, end date or destination");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Request is missing start date, end date or destination");
         }
 
         // Generate itinerary from Gemini
@@ -112,7 +113,8 @@ public class TravelRecommendationService {
         } catch (ResponseStatusException exception) {
             throw exception;
         } catch (JsonProcessingException exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini returned invalid recommendation JSON", exception);
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini returned invalid recommendation JSON",
+                    exception);
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini request failed", exception);
         }
@@ -169,8 +171,7 @@ public class TravelRecommendationService {
                                 activity.getActivityName(),
                                 activity.getStartTime().toString(),
                                 activity.getEndTime().toString(),
-                                activityItem.getDescription()
-                        ));
+                                activityItem.getDescription()));
                     }
                 }
 
@@ -179,8 +180,7 @@ public class TravelRecommendationService {
                         dayPlan.getDay(),
                         dayPlan.getTitle(),
                         itinerary.getNotes(),
-                        savedActivities
-                ));
+                        savedActivities));
             }
         } else {
             System.out.println("WARNING: Days list is null or empty!");
@@ -193,8 +193,7 @@ public class TravelRecommendationService {
                 trip.getEndDate(),
                 trip.getName(),
                 generatedItinerary.getOverview(),
-                savedDays
-        );
+                savedDays);
     }
 
     /**
@@ -228,7 +227,8 @@ public class TravelRecommendationService {
     }
 
     private int parseDurationToMinutes(String duration) {
-        if (duration == null || duration.isBlank()) return 120; // Default 2 hours
+        if (duration == null || duration.isBlank())
+            return 120; // Default 2 hours
 
         duration = duration.toLowerCase().trim();
 
@@ -273,7 +273,8 @@ public class TravelRecommendationService {
             // Generate sample activities for the day
             if (i == 1) {
                 activities.add(new ActivityItem("Arrival & Check-in", "14:00", "2 hours",
-                        "Arrive at your destination and check into your accommodation", "Hotel/Airport", "Accommodation"));
+                        "Arrive at your destination and check into your accommodation", "Hotel/Airport",
+                        "Accommodation"));
                 activities.add(new ActivityItem("Local Orientation Walk", "16:30", "1.5 hours",
                         "Take a leisurely walk around the neighborhood to get oriented", "City Center", "Sightseeing"));
                 activities.add(new ActivityItem("Welcome Dinner", "19:00", "2 hours",
@@ -289,7 +290,8 @@ public class TravelRecommendationService {
                 activities.add(new ActivityItem("Breakfast", "09:00", "1 hour",
                         "Start your day with a local breakfast", "Hotel/Café", "Dining"));
                 activities.add(new ActivityItem("Main Activity", "10:30", "3 hours",
-                        "Explore major attractions and landmarks of " + request.getDestination(), "City Center", "Sightseeing"));
+                        "Explore major attractions and landmarks of " + request.getDestination(), "City Center",
+                        "Sightseeing"));
                 activities.add(new ActivityItem("Lunch", "13:30", "1.5 hours",
                         "Enjoy lunch at a local restaurant", "Downtown", "Dining"));
                 activities.add(new ActivityItem("Afternoon Activity", "15:00", "2 hours",
@@ -310,15 +312,15 @@ public class TravelRecommendationService {
     private String buildPrompt(String preferencesJson, TravelRecommendationRequest request) {
         return """
                 You are a travel recommendation assistant. Your response MUST be valid JSON with the exact structure specified.
-                
+
                 IMPORTANT: You MUST include a "days" array in your response. Each day must have: day number, title, description, and activities array.
-                
+
                 Trip Details:
                 - Destination: %s
                 - Start Date: %s
                 - End Date: %s
                 - Traveler Preferences: %s
-                
+
                 Requirements:
                 1. Create exactly one day plan for each day of the trip (if trip is 3 days, create 3 day objects)
                 2. Each day MUST have: day (integer 1,2,3...), title (string), description (string), activities (array)
@@ -329,9 +331,9 @@ public class TravelRecommendationService {
                 7. Consider the traveler's preferences (budget, interests, pace, etc.)
                 8. Activities should be realistic and in chronological order
                 9. For each activity, MUST include location (specific place name or area) and category (type of activity)
-                
+
                 Activity Categories: Dining, Accommodation, Museum, Sightseeing, Shopping, Class/Workshop, Nightlife, Transportation, Spa/Wellness, Other
-                
+
                 RESPONSE FORMAT (REQUIRED):
                 {
                   "overview": "string with trip summary",
@@ -353,12 +355,12 @@ public class TravelRecommendationService {
                     }
                   ]
                 }
-                """.formatted(
-                request.getDestination(),
-                request.getStartDate(),
-                request.getEndDate(),
-                preferencesJson
-        );
+                """
+                .formatted(
+                        request.getDestination(),
+                        request.getStartDate(),
+                        request.getEndDate(),
+                        preferencesJson);
     }
 
     private Schema buildResponseSchema() {
@@ -369,8 +371,7 @@ public class TravelRecommendationService {
                         "name", stringSchema(),
                         "time", stringSchema(),
                         "duration", stringSchema(),
-                        "description", stringSchema()
-                ))
+                        "description", stringSchema()))
                 .build();
 
         // Build day schema with activities array
@@ -383,8 +384,7 @@ public class TravelRecommendationService {
                         "activities", Schema.builder()
                                 .type(Type.Known.ARRAY)
                                 .items(activitySchema)
-                                .build()
-                ))
+                                .build()))
                 .build();
 
         // Build root schema with overview and days array
@@ -395,8 +395,7 @@ public class TravelRecommendationService {
                         "days", Schema.builder()
                                 .type(Type.Known.ARRAY)
                                 .items(daySchema)
-                                .build()
-                ))
+                                .build()))
                 .build();
     }
 
@@ -412,17 +411,29 @@ public class TravelRecommendationService {
         private String overview;
         private List<DayPlan> days;
 
-        public GeneratedItinerary() {}
+        public GeneratedItinerary() {
+        }
 
         public GeneratedItinerary(String overview, List<DayPlan> days) {
             this.overview = overview;
             this.days = days;
         }
 
-        public String getOverview() { return overview; }
-        public void setOverview(String overview) { this.overview = overview; }
-        public List<DayPlan> getDays() { return days; }
-        public void setDays(List<DayPlan> days) { this.days = days; }
+        public String getOverview() {
+            return overview;
+        }
+
+        public void setOverview(String overview) {
+            this.overview = overview;
+        }
+
+        public List<DayPlan> getDays() {
+            return days;
+        }
+
+        public void setDays(List<DayPlan> days) {
+            this.days = days;
+        }
     }
 
     public static class DayPlan {
@@ -431,16 +442,40 @@ public class TravelRecommendationService {
         private String description;
         private List<ActivityItem> activities;
 
-        public DayPlan() {}
+        public DayPlan() {
+        }
 
-        public Integer getDay() { return day; }
-        public void setDay(Integer day) { this.day = day; }
-        public String getTitle() { return title; }
-        public void setTitle(String title) { this.title = title; }
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        public List<ActivityItem> getActivities() { return activities; }
-        public void setActivities(List<ActivityItem> activities) { this.activities = activities; }
+        public Integer getDay() {
+            return day;
+        }
+
+        public void setDay(Integer day) {
+            this.day = day;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public List<ActivityItem> getActivities() {
+            return activities;
+        }
+
+        public void setActivities(List<ActivityItem> activities) {
+            this.activities = activities;
+        }
     }
 
     public static class ActivityItem {
@@ -451,13 +486,15 @@ public class TravelRecommendationService {
         private String location;
         private String category;
 
-        public ActivityItem() {}
+        public ActivityItem() {
+        }
 
         public ActivityItem(String name, String time, String duration, String description) {
             this(name, time, duration, description, "", "Activity");
         }
 
-        public ActivityItem(String name, String time, String duration, String description, String location, String category) {
+        public ActivityItem(String name, String time, String duration, String description, String location,
+                String category) {
             this.name = name;
             this.time = time;
             this.duration = duration;
@@ -466,17 +503,52 @@ public class TravelRecommendationService {
             this.category = category;
         }
 
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-        public String getTime() { return time; }
-        public void setTime(String time) { this.time = time; }
-        public String getDuration() { return duration; }
-        public void setDuration(String duration) { this.duration = duration; }
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        public String getLocation() { return location; }
-        public void setLocation(String location) { this.location = location; }
-        public String getCategory() { return category; }
-        public void setCategory(String category) { this.category = category; }
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getTime() {
+            return time;
+        }
+
+        public void setTime(String time) {
+            this.time = time;
+        }
+
+        public String getDuration() {
+            return duration;
+        }
+
+        public void setDuration(String duration) {
+            this.duration = duration;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
     }
 }

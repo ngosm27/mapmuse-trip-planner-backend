@@ -7,14 +7,17 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getUsers() {
@@ -30,6 +33,9 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(hashedPassword);
         return userRepository.save(user);
     }
 
@@ -58,7 +64,7 @@ public class UserService {
 
     public User loginUser(User user) {
         return userRepository.findByEmail(user.getEmail())
-                .filter(u -> u.getPassword().equals(user.getPassword()))
+                .filter(u -> passwordEncoder.matches(user.getPassword(), u.getPassword()))
                 .orElse(null);
     }
 

@@ -2,6 +2,7 @@ package com.example.demo.user;
 
 import com.example.demo.trip.Trip;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,15 @@ public class User {
     private Long id;
     private String name;
     private String username;
-    private String password;
     private String email;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private UserPreferences preferences;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Trip> trips = new ArrayList<>();
 

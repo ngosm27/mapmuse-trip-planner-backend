@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.annotation.PostConstruct;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -20,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("========== USER CONTROLLER LOADED ==========");
+    }
 
     @Autowired
     public UserController(UserService userService) {
@@ -54,7 +60,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        // if user is already exists in the database,
+        // if user is already exists in the database
         if (userService.getUserByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(400).build();
         }
