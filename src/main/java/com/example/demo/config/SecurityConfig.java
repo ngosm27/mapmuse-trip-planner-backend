@@ -25,10 +25,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {
-                })
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/users/register", "/users/login").permitAll()
+                        .requestMatchers("/", "/users", "/users/register", "/users/login").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated());
 
@@ -39,8 +38,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "https://trip-planner-tmfw7.ondigitalocean.app"));
+        // Allow the deployed frontend origin(s) and localhost for development
+        configuration.setAllowedOriginPatterns(List.of(
+                "https://trip-planner-tmfw7.ondigitalocean.app",
+                "https://planner-trips-*.ondigitalocean.app",
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "*"));
 
         configuration.setAllowedMethods(List.of(
                 "GET",
@@ -50,6 +54,8 @@ public class SecurityConfig {
                 "OPTIONS"));
 
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
