@@ -21,12 +21,16 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // enable CORS and allow the public user endpoints; keep other endpoints secured
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/users", "/users/register", "/users/login").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .anyRequest().authenticated());
 
         return http.build();
     }
@@ -35,29 +39,19 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow the deployed frontend origin(s) and localhost for development
+        // explicitly allow frontend origins (avoid wildcard when allowCredentials=true)
         configuration.setAllowedOriginPatterns(List.of(
                 "https://trip-planner-tmfw7.ondigitalocean.app",
-                "https://planner-trips-*.ondigitalocean.app",
                 "http://localhost:5173",
-                "http://localhost:3000",
-                "*"));
+                "http://localhost:3000"));
 
-        configuration.setAllowedMethods(List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "OPTIONS"));
-
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 
