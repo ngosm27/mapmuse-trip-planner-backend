@@ -47,9 +47,6 @@ public class TravelRecommendationService {
             TripRepository tripRepository,
             ItineraryRepository itineraryRepository,
             ActivityRepository activityRepository) {
-        System.out.println("Gemini API key exists: " + (apiKey != null && !apiKey.isBlank()));
-        System.out.println("Gemini API key length: " + (apiKey == null ? 0 : apiKey.length()));
-        System.out.println("Gemini model: " + model);
         this.apiKey = apiKey;
         this.model = model;
         this.userRepository = userRepository;
@@ -62,33 +59,22 @@ public class TravelRecommendationService {
     @Transactional
     public TravelRecommendationResponse generateRecommendationForUser(Long userId,
             TravelRecommendationRequest request) {
-        System.out.println("========== GENERATE RECOMMENDATION FOR USER ==========");
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        System.out.println("========== USER FOUND ==========");
-        System.out.println("User ID: " + user.getId());
-        System.out.println("User Name: " + user.getName());
 
         UserPreferences preferences = user.getPreferences();
         if (preferences == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has not completed travel preferences");
         }
-        System.out.println("========== USER PREFERENCES FOUND ==========");
 
         if (request.getStartDate() == null || request.getEndDate() == null || request.getDestination() == null) {
-            System.out.println("========== INVALID REQUEST ==========");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Request is missing start date, end date or destination");
         }
 
-        System.out.println("========== GENERATE ITINERARY ==========");
-        System.out.println("Destination: " + request.getDestination());
-        System.out.println("Start Date: " + request.getStartDate());
-        System.out.println("End Date: " + request.getEndDate());
-
         // Generate itinerary from Gemini
         GeneratedItinerary generatedItinerary = generateFromGemini(preferences, request);
-        System.out.println("========== ITINERARY GENERATED ==========");
 
         // Save to database and return response
         return saveItineraryToDatabase(user, request, generatedItinerary);
@@ -99,7 +85,6 @@ public class TravelRecommendationService {
             TravelRecommendationRequest request) {
 
         if (apiKey == null || apiKey.isBlank()) {
-            System.out.println("========== GOOGLE_API_KEY NOT CONFIGURED ==========");
             throw new ResponseStatusException(
                     HttpStatus.SERVICE_UNAVAILABLE,
                     "GOOGLE_API_KEY is not configured");
@@ -144,7 +129,7 @@ public class TravelRecommendationService {
                         throw exception;
                     }
 
-                    long delay = (long) Math.pow(2, attempt - 1) * 1000;
+                    long delay = (long) Math.pow(2, attempt - 1) * 500; // Exponential backoff: 500ms, 1000ms, 2000ms
 
                     System.out.println(
                             "Gemini server unavailable. Retrying in "
