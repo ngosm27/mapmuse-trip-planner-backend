@@ -6,12 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import tools.jackson.databind.JsonNode;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +22,9 @@ public class User {
     private String name;
     private String username;
     private String email;
+
+    // @Column(unique = true)
+    // private String googleId;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
@@ -62,6 +63,14 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
+    // public void setGoogleId(String googleId) {
+    // this.googleId = googleId;
+    // }
+
+    // public String getGoogleId() {
+    // return this.googleId;
+    // }
 
     public void setName(String name) {
         this.name = name;

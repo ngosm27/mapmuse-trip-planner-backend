@@ -59,6 +59,23 @@ public class UserController {
         return ResponseEntity.status(401).build();
     }
 
+    // @PostMapping("/users/google")
+    // public ResponseEntity<User> googleLogin(
+    // @RequestBody Map<String, String> body) {
+
+    // try {
+    // String credential = body.get("credential");
+
+    // User user = userService.loginWithGoogle(credential);
+
+    // return ResponseEntity.ok(user);
+
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // return ResponseEntity.status(401).build();
+    // }
+    // }
+
     @PostMapping("/register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
 

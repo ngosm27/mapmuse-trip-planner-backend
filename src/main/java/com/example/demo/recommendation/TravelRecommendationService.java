@@ -42,45 +42,67 @@ public class TravelRecommendationService {
 
     public TravelRecommendationService(
             @Value("${gemini.api-key:}") String apiKey,
-            @Value("${gemini.model:gemini-2.5-flash}") String model,
+            @Value("${gemini.model:gemini-3.5-flash-lite}") String model,
             UserRepository userRepository,
             TripRepository tripRepository,
             ItineraryRepository itineraryRepository,
             ActivityRepository activityRepository) {
+        System.out.println("Gemini API key exists: " + (apiKey != null && !apiKey.isBlank()));
+        System.out.println("Gemini API key length: " + (apiKey == null ? 0 : apiKey.length()));
+        System.out.println("Gemini model: " + model);
         this.apiKey = apiKey;
         this.model = model;
         this.userRepository = userRepository;
         this.tripRepository = tripRepository;
         this.itineraryRepository = itineraryRepository;
         this.activityRepository = activityRepository;
+
     }
 
     @Transactional
     public TravelRecommendationResponse generateRecommendationForUser(Long userId,
             TravelRecommendationRequest request) {
+        System.out.println("========== GENERATE RECOMMENDATION FOR USER ==========");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        System.out.println("========== USER FOUND ==========");
+        System.out.println("User ID: " + user.getId());
+        System.out.println("User Name: " + user.getName());
 
         UserPreferences preferences = user.getPreferences();
         if (preferences == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has not completed travel preferences");
         }
+        System.out.println("========== USER PREFERENCES FOUND ==========");
 
         if (request.getStartDate() == null || request.getEndDate() == null || request.getDestination() == null) {
+            System.out.println("========== INVALID REQUEST ==========");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Request is missing start date, end date or destination");
         }
 
+        System.out.println("========== GENERATE ITINERARY ==========");
+        System.out.println("Destination: " + request.getDestination());
+        System.out.println("Start Date: " + request.getStartDate());
+        System.out.println("End Date: " + request.getEndDate());
+
         // Generate itinerary from Gemini
         GeneratedItinerary generatedItinerary = generateFromGemini(preferences, request);
+        System.out.println("========== ITINERARY GENERATED ==========");
 
         // Save to database and return response
         return saveItineraryToDatabase(user, request, generatedItinerary);
     }
 
-    private GeneratedItinerary generateFromGemini(UserPreferences preferences, TravelRecommendationRequest request) {
+    private GeneratedItinerary generateFromGemini(
+            UserPreferences preferences,
+            TravelRecommendationRequest request) {
+
         if (apiKey == null || apiKey.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "GOOGLE_API_KEY is not configured");
+            System.out.println("========== GOOGLE_API_KEY NOT CONFIGURED ==========");
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "GOOGLE_API_KEY is not configured");
         }
 
         try {
@@ -89,34 +111,93 @@ public class TravelRecommendationService {
 
             GenerateContentConfig config = GenerateContentConfig.builder()
                     .responseMimeType("application/json")
-                    // Schema enforcement not working reliably, relying on prompt instead
                     .candidateCount(1)
                     .build();
 
-            Client client = Client.builder().apiKey(apiKey).build();
-            GenerateContentResponse response = client.models.generateContent(model, prompt, config);
+            Client client = Client.builder()
+                    .apiKey(apiKey)
+                    .build();
+
+            // Retry Gemini call up to 3 times
+            GenerateContentResponse response = null;
+
+            int maxAttempts = 3;
+
+            for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    System.out.println(
+                            "Calling Gemini... attempt "
+                                    + attempt + "/" + maxAttempts);
+
+                    response = client.models.generateContent(
+                            model,
+                            prompt,
+                            config);
+
+                    // Gemini request succeeded
+                    break;
+
+                } catch (com.google.genai.errors.ServerException exception) {
+
+                    // Only retry server-side errors such as 503
+                    if (attempt == maxAttempts) {
+                        throw exception;
+                    }
+
+                    long delay = (long) Math.pow(2, attempt - 1) * 1000;
+
+                    System.out.println(
+                            "Gemini server unavailable. Retrying in "
+                                    + delay + " ms...");
+
+                    Thread.sleep(delay);
+                }
+            }
 
             String responseJson = response.text();
+
             if (responseJson == null || responseJson.isBlank()) {
-                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini returned an empty response");
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_GATEWAY,
+                        "Gemini returned an empty response");
             }
 
-            GeneratedItinerary itinerary = objectMapper.readValue(responseJson, GeneratedItinerary.class);
+            GeneratedItinerary itinerary = objectMapper.readValue(
+                    responseJson,
+                    GeneratedItinerary.class);
 
-            // FALLBACK: If Gemini didn't return days, generate default structure
-            if (itinerary.getDays() == null || itinerary.getDays().isEmpty()) {
-                System.out.println("Days missing from Gemini response. Generating default day structure...");
-                itinerary.setDays(generateDefaultDays(preferences, request));
+            // FALLBACK: If Gemini didn't return days,
+            // generate default structure
+            if (itinerary.getDays() == null
+                    || itinerary.getDays().isEmpty()) {
+
+                System.out.println(
+                        "Days missing from Gemini response. "
+                                + "Generating default day structure...");
+
+                itinerary.setDays(
+                        generateDefaultDays(preferences, request));
             }
+            System.out.println("Generation SUCCESSFUL.");
 
             return itinerary;
+
         } catch (ResponseStatusException exception) {
             throw exception;
+
         } catch (JsonProcessingException exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini returned invalid recommendation JSON",
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Gemini returned invalid recommendation JSON",
                     exception);
+
         } catch (Exception exception) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Gemini request failed", exception);
+            exception.printStackTrace();
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Gemini request failed",
+                    exception);
         }
     }
 
