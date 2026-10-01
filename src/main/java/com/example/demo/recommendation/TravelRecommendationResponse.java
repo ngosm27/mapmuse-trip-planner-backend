@@ -12,7 +12,8 @@ public class TravelRecommendationResponse {
     private String overview;
     private List<ItineraryDetail> itinerary;
 
-    public TravelRecommendationResponse() {}
+    public TravelRecommendationResponse() {
+    }
 
     public TravelRecommendationResponse(
             Long tripId,
@@ -31,26 +32,61 @@ public class TravelRecommendationResponse {
         this.itinerary = itinerary;
     }
 
-    public Long getTripId() { return tripId; }
-    public void setTripId(Long tripId) { this.tripId = tripId; }
+    public Long getTripId() {
+        return tripId;
+    }
 
-    public String getDestination() { return destination; }
-    public void setDestination(String destination) { this.destination = destination; }
+    public void setTripId(Long tripId) {
+        this.tripId = tripId;
+    }
 
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
+    public String getDestination() {
+        return destination;
+    }
 
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public LocalDate getStartDate() {
+        return startDate;
+    }
 
-    public String getOverview() { return overview; }
-    public void setOverview(String overview) { this.overview = overview; }
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
 
-    public List<ItineraryDetail> getItinerary() { return itinerary; }
-    public void setItinerary(List<ItineraryDetail> itinerary) { this.itinerary = itinerary; }
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public List<ItineraryDetail> getItinerary() {
+        return itinerary;
+    }
+
+    public void setItinerary(List<ItineraryDetail> itinerary) {
+        this.itinerary = itinerary;
+    }
 }
 
 class ItineraryDetail {
@@ -60,7 +96,8 @@ class ItineraryDetail {
     private String description;
     private List<ActivityDetail> activities;
 
-    public ItineraryDetail() {}
+    public ItineraryDetail() {
+    }
 
     public ItineraryDetail(
             Long itineraryId,
@@ -75,20 +112,45 @@ class ItineraryDetail {
         this.activities = activities;
     }
 
-    public Long getItineraryId() { return itineraryId; }
-    public void setItineraryId(Long itineraryId) { this.itineraryId = itineraryId; }
+    public Long getItineraryId() {
+        return itineraryId;
+    }
 
-    public Integer getDayNumber() { return dayNumber; }
-    public void setDayNumber(Integer dayNumber) { this.dayNumber = dayNumber; }
+    public void setItineraryId(Long itineraryId) {
+        this.itineraryId = itineraryId;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public Integer getDayNumber() {
+        return dayNumber;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public void setDayNumber(Integer dayNumber) {
+        this.dayNumber = dayNumber;
+    }
 
-    public List<ActivityDetail> getActivities() { return activities; }
-    public void setActivities(List<ActivityDetail> activities) { this.activities = activities; }
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<ActivityDetail> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<ActivityDetail> activities) {
+        this.activities = activities;
+    }
 }
 
 class ActivityDetail {
@@ -97,29 +159,67 @@ class ActivityDetail {
     private String startTime;
     private String endTime;
     private String description;
+    private String websiteUrl;
 
-    public ActivityDetail() {}
+    public ActivityDetail() {
+    }
 
-    public ActivityDetail(Long activityId, String name, String startTime, String endTime, String description) {
+    public ActivityDetail(Long activityId, String name, String startTime, String endTime, String description,
+            String websiteUrl) {
         this.activityId = activityId;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
         this.description = description;
+        this.websiteUrl = websiteUrl;
+
     }
 
-    public Long getActivityId() { return activityId; }
-    public void setActivityId(Long activityId) { this.activityId = activityId; }
+    public Long getActivityId() {
+        return activityId;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
+    }
 
-    public String getStartTime() { return startTime; }
-    public void setStartTime(String startTime) { this.startTime = startTime; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEndTime() { return endTime; }
-    public void setEndTime(String endTime) { this.endTime = endTime; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
 }

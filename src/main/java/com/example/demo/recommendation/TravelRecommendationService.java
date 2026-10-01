@@ -48,6 +48,8 @@ public class TravelRecommendationService {
             ItineraryRepository itineraryRepository,
             ActivityRepository activityRepository) {
         this.apiKey = apiKey;
+        System.out
+                .println("Gemini API Key: " + (apiKey != null && !apiKey.isBlank() ? "Configured" : "Not Configured"));
         this.model = model;
         this.userRepository = userRepository;
         this.tripRepository = tripRepository;
@@ -118,6 +120,7 @@ public class TravelRecommendationService {
                             model,
                             prompt,
                             config);
+                    System.out.print(response.text());
 
                     // Gemini request succeeded
                     break;
@@ -230,6 +233,7 @@ public class TravelRecommendationService {
                         activity.setCategory(activityItem.getCategory() != null && !activityItem.getCategory().isBlank()
                                 ? activityItem.getCategory()
                                 : "Other"); // Use category from Gemini, default to "Other"
+                        activity.setWebsiteUrl(activityItem.getWebsiteUrl());
                         activity = activityRepository.save(activity);
 
                         savedActivities.add(new ActivityDetail(
@@ -237,7 +241,8 @@ public class TravelRecommendationService {
                                 activity.getActivityName(),
                                 activity.getStartTime().toString(),
                                 activity.getEndTime().toString(),
-                                activityItem.getDescription()));
+                                activityItem.getDescription(),
+                                activity.getWebsiteUrl()));
                     }
                 }
 
@@ -340,30 +345,31 @@ public class TravelRecommendationService {
             if (i == 1) {
                 activities.add(new ActivityItem("Arrival & Check-in", "14:00", "2 hours",
                         "Arrive at your destination and check into your accommodation", "Hotel/Airport",
-                        "Accommodation"));
+                        "Accommodation", null));
                 activities.add(new ActivityItem("Local Orientation Walk", "16:30", "1.5 hours",
-                        "Take a leisurely walk around the neighborhood to get oriented", "City Center", "Sightseeing"));
+                        "Take a leisurely walk around the neighborhood to get oriented", "City Center", "Sightseeing",
+                        null));
                 activities.add(new ActivityItem("Welcome Dinner", "19:00", "2 hours",
-                        "Enjoy dinner at a recommended local restaurant", "Downtown Area", "Dining"));
+                        "Enjoy dinner at a recommended local restaurant", "Downtown Area", "Dining", null));
             } else if (i == dayCount) {
                 activities.add(new ActivityItem("Last Minute Shopping", "09:00", "2 hours",
-                        "Browse local shops for souvenirs and gifts", "Shopping District", "Shopping"));
+                        "Browse local shops for souvenirs and gifts", "Shopping District", "Shopping", null));
                 activities.add(new ActivityItem("Lunch", "12:00", "1.5 hours",
-                        "Enjoy lunch at a favorite spot", "City Center", "Dining"));
+                        "Enjoy lunch at a favorite spot", "City Center", "Dining", null));
                 activities.add(new ActivityItem("Depart for Airport", "15:00", "1 hour",
-                        "Travel to airport for departure", "Airport", "Transportation"));
+                        "Travel to airport for departure", "Airport", "Transportation", null));
             } else {
                 activities.add(new ActivityItem("Breakfast", "09:00", "1 hour",
-                        "Start your day with a local breakfast", "Hotel/Café", "Dining"));
+                        "Start your day with a local breakfast", "Hotel/Café", "Dining", null));
                 activities.add(new ActivityItem("Main Activity", "10:30", "3 hours",
                         "Explore major attractions and landmarks of " + request.getDestination(), "City Center",
-                        "Sightseeing"));
+                        "Sightseeing", null));
                 activities.add(new ActivityItem("Lunch", "13:30", "1.5 hours",
-                        "Enjoy lunch at a local restaurant", "Downtown", "Dining"));
+                        "Enjoy lunch at a local restaurant", "Downtown", "Dining", null));
                 activities.add(new ActivityItem("Afternoon Activity", "15:00", "2 hours",
-                        "Visit museums, markets, or hidden gems", "Various Neighborhoods", "Sightseeing"));
+                        "Visit museums, markets, or hidden gems", "Various Neighborhoods", "Sightseeing", null));
                 activities.add(new ActivityItem("Dinner", "19:00", "2 hours",
-                        "Experience local or international dining", "Downtown", "Dining"));
+                        "Experience local or international dining", "Downtown", "Dining", null));
             }
 
             day.setActivities(activities);
@@ -396,7 +402,9 @@ public class TravelRecommendationService {
                 6. Provide helpful descriptions for each activity
                 7. Consider the traveler's preferences (budget, interests, pace, etc.)
                 8. Activities should be realistic and in chronological order
-                9. For each activity, MUST include location (specific place name or area) and category (type of activity)
+                10. For specific tourist attractions, museums, restaurants, and venues, include the official website URL when known.
+                11. Make sure the content of the website is relevant to the attraction or activity.
+                12. Do not invent or guess URLs. If the official website is not known, return null.
 
                 Activity Categories: Dining, Accommodation, Museum, Sightseeing, Shopping, Class/Workshop, Nightlife, Transportation, Spa/Wellness, Other
 
@@ -415,7 +423,8 @@ public class TravelRecommendationService {
                           "duration": "X hours" or "X minutes",
                           "description": "activity details",
                           "location": "specific place name or neighborhood",
-                          "category": "Dining|Accommodation|Museum|Sightseeing|Shopping|Class|Nightlife|Transportation|Spa|Other"
+                          "category": "Dining|Accommodation|Museum|Sightseeing|Shopping|Class|Nightlife|Transportation|Spa|Other",
+                          "websiteUrl": "official website URL or null"
                         }
                       ]
                     }
@@ -551,22 +560,24 @@ public class TravelRecommendationService {
         private String description;
         private String location;
         private String category;
+        private String websiteUrl;
 
         public ActivityItem() {
         }
 
         public ActivityItem(String name, String time, String duration, String description) {
-            this(name, time, duration, description, "", "Activity");
+            this(name, time, duration, description, "", "Activity", description);
         }
 
         public ActivityItem(String name, String time, String duration, String description, String location,
-                String category) {
+                String category, String websiteUrl) {
             this.name = name;
             this.time = time;
             this.duration = duration;
             this.description = description;
             this.location = location;
             this.category = category;
+            this.websiteUrl = websiteUrl;
         }
 
         public String getName() {
@@ -615,6 +626,14 @@ public class TravelRecommendationService {
 
         public void setCategory(String category) {
             this.category = category;
+        }
+
+        public String getWebsiteUrl() {
+            return websiteUrl;
+        }
+
+        public void setWebsiteUrl(String websiteUrl) {
+            this.websiteUrl = websiteUrl;
         }
     }
 }

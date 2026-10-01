@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import com.example.demo.itinerary.Itinerary;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +22,8 @@ public class Activity {
     private LocalTime startTime;
     private LocalTime endTime;
     private String category; // FOOD, SIGHTSEEING, TRANSPORT, etc.
+    @Column(length = 2048)
+    private String websiteUrl; // Official website URL for the activity
 
     @ManyToOne
     private Itinerary itinerary;
@@ -28,12 +31,14 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(String activityName, String location, LocalTime startTime, LocalTime endTime, String category) {
+    public Activity(String activityName, String location, LocalTime startTime, LocalTime endTime, String category,
+            String websiteUrl) {
         this.activityName = activityName;
         this.location = location;
         this.startTime = startTime;
         this.endTime = endTime;
         this.category = category;
+        this.websiteUrl = websiteUrl;
     }
 
     public Long getId() {
@@ -90,6 +95,15 @@ public class Activity {
 
     public void setItinerary(Itinerary itinerary) {
         this.itinerary = itinerary;
+    }
+
+    public String getWebsiteUrl() {
+        return this.websiteUrl;
+    }
+
+    public void setWebsiteUrl(String websiteUrl) {
+        System.out.println("Setting website URL: " + websiteUrl);
+        this.websiteUrl = websiteUrl;
     }
 
 }
